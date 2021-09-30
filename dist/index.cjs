@@ -8779,14 +8779,6 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
-/***/ 9200:
-/***/ ((module) => {
-
-module.exports = eval("require")("has-yarn");
-
-
-/***/ }),
-
 /***/ 2357:
 /***/ ((module) => {
 
@@ -8962,8 +8954,21 @@ var __webpack_exports__ = {};
 var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
-// EXTERNAL MODULE: ./node_modules/@vercel/ncc/dist/ncc/@@notfound.js?has-yarn
-var _notfoundhas_yarn = __nccwpck_require__(9200);
+;// CONCATENATED MODULE: external "node:process"
+const external_node_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:process");
+;// CONCATENATED MODULE: external "node:path"
+const external_node_path_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:path");
+;// CONCATENATED MODULE: external "node:fs"
+const external_node_fs_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs");
+;// CONCATENATED MODULE: ./node_modules/has-yarn/index.js
+
+
+
+
+function hasYarn(cwd = external_node_process_namespaceObject.cwd()) {
+	return external_node_fs_namespaceObject.existsSync(external_node_path_namespaceObject.resolve(cwd, 'yarn.lock'));
+}
+
 // EXTERNAL MODULE: ./node_modules/hosted-git-info/index.js
 var hosted_git_info = __nccwpck_require__(8869);
 ;// CONCATENATED MODULE: ./lib/packageRepoUrls.js
@@ -9675,7 +9680,7 @@ function getFromEnv(name) {
 async function run() {
   const npmVersion = await core.group(`Update npm to ${NPM_VERSION}`, () => updateNpm(NPM_VERSION));
 
-  if (_notfoundhas_yarn()) {
+  if (hasYarn()) {
     await core.group("Create package-lock.json", async () => {
       await (0,exec.exec)("npm", npmArgs("i", "--package-lock-only"));
     });
@@ -9699,7 +9704,7 @@ async function run() {
     await (0,exec.exec)("npm", npmArgs("ci"));
   });
 
-  if (_notfoundhas_yarn()) {
+  if (hasYarn()) {
     await core.group("Reimport yarn lock", () => restoreYarn());
   }
 
