@@ -9,6 +9,7 @@ type Vulnerability = {
 };
 
 type AuditReport = Map<string, { name: string; severity: string; title: string; url: string }>;
+type JSONAuditReport = Map<string, {}>
 
 type FixEntry = {
   name: string;
