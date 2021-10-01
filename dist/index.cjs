@@ -9597,7 +9597,9 @@ async function run() {
       baseBranch = await getDefaultBranch({ token, repository });
     }
 
-    const author = getFromEnv("GITHUB_ACTOR");
+    const author = core.getInput("github_user");
+    const email = core.getInput("github_email");
+
     return createOrUpdatePullRequest({
       branch: core.getInput("branch"),
       token,
@@ -9607,7 +9609,7 @@ async function run() {
       commitBody: buildCommitBody(report),
       repository,
       author,
-      email: `${author}@users.noreply.github.com`,
+      email,
       labels: commaSeparatedList(core.getInput("labels")),
       lockFile: has_yarn() ? "yarn.lock" : "package-lock.json",
     });
