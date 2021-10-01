@@ -5244,6 +5244,23 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
+/***/ 3707:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+const path = __nccwpck_require__(5622);
+const fs = __nccwpck_require__(5747);
+
+const hasYarn = (cwd = process.cwd()) => fs.existsSync(path.resolve(cwd, 'yarn.lock'));
+
+module.exports = hasYarn;
+// TODO: Remove this for the next major release
+module.exports.default = hasYarn;
+
+
+/***/ }),
+
 /***/ 135:
 /***/ ((module) => {
 
@@ -8807,6 +8824,8 @@ __nccwpck_require__.r(__webpack_exports__);
 var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
+// EXTERNAL MODULE: ./node_modules/has-yarn/index.js
+var has_yarn = __nccwpck_require__(3707);
 // EXTERNAL MODULE: ./node_modules/hosted-git-info/index.js
 var hosted_git_info = __nccwpck_require__(8869);
 ;// CONCATENATED MODULE: ./lib/packageRepoUrls.js
@@ -9286,6 +9305,7 @@ function splitRepo(repository) {
  *   author: string,
  *   email: string,
  *   labels: string[],
+ *   lockFile : string,
  * }} params
  */
 async function createOrUpdatePullRequest({
@@ -9299,6 +9319,7 @@ async function createOrUpdatePullRequest({
   author,
   email,
   labels,
+  lockFile,
 }) {
   const remote = `https://${author}:${token}@github.com/${repository}.git`;
   const { owner, repo } = splitRepo(repository);
@@ -9318,7 +9339,7 @@ async function createOrUpdatePullRequest({
 
   await (0,exec.exec)("git", ["config", "user.name", author]);
   await (0,exec.exec)("git", ["config", "user.email", email]);
-  await (0,exec.exec)("git", ["add", "package-lock.json"]);
+  await (0,exec.exec)("git", ["add", lockFile]);
   await (0,exec.exec)("git", ["commit", "--message", `${title}\n\n${commitBody}`]);
   await (0,exec.exec)("git", ["checkout", "-B", branch]);
   await (0,exec.exec)("git", ["push", remote, `HEAD:${branch}`, ...(pull ? ["--force"] : [])]);
@@ -9422,6 +9443,23 @@ async function listPackages(options = {}) {
   return packages;
 }
 
+;// CONCATENATED MODULE: ./lib/restoreYarn.js
+
+
+/**
+ * @param {import("@actions/exec").ExecOptions} [options]
+ * @returns {Promise<void>}
+ */
+async function restoreYarn(options = {}) {
+  const cwd = options.cwd || process.cwd();
+
+  await (0,exec.exec)("rm -rf yarn.lock", undefined, { ...options, cwd });
+
+  await (0,exec.exec)("yarn import --silent", undefined, { ...options, cwd });
+
+  await (0,exec.exec)("rm -rf package-lock.json", undefined, { ...options, cwd });
+}
+
 ;// CONCATENATED MODULE: ./lib/updateNpm.js
 
 
@@ -9476,6 +9514,8 @@ function commaSeparatedList(str) {
 
 
 
+
+
 /**
  * @returns {Promise<boolean>}
  */
@@ -9502,6 +9542,12 @@ function getFromEnv(name) {
 
 async function run() {
   const npmVersion = await core.group(`Update npm to ${NPM_VERSION}`, () => updateNpm(NPM_VERSION));
+
+  if (has_yarn()) {
+    await core.group("Create package-lock.json", async () => {
+      await (0,exec.exec)("npm", npmArgs("i", "--package-lock-only"));
+    });
+  }
 
   await core.group("Install user packages", async () => {
     await (0,exec.exec)("npm", npmArgs("ci"));
@@ -9532,6 +9578,10 @@ async function run() {
     return;
   }
 
+  if (has_yarn()) {
+    await core.group("Reimport yarn lock", () => restoreYarn());
+  }
+
   const changed = await core.group("Check file changes", filesChanged);
   if (changed) {
     core.info("No file changes.");
@@ -9547,7 +9597,9 @@ async function run() {
       baseBranch = await getDefaultBranch({ token, repository });
     }
 
-    const author = getFromEnv("GITHUB_ACTOR");
+    const author = core.getInput("github_user");
+    const email = core.getInput("github_email");
+
     return createOrUpdatePullRequest({
       branch: core.getInput("branch"),
       token,
@@ -9557,8 +9609,9 @@ async function run() {
       commitBody: buildCommitBody(report),
       repository,
       author,
-      email: `${author}@users.noreply.github.com`,
+      email,
       labels: commaSeparatedList(core.getInput("labels")),
+      lockFile: has_yarn() ? "yarn.lock" : "package-lock.json",
     });
   });
 }
