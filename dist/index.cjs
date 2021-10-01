@@ -9565,10 +9565,6 @@ async function run() {
     await (0,exec.exec)("npm", npmArgs("ci"));
   });
 
-  if (has_yarn()) {
-    await core.group("Reimport yarn lock", () => restoreYarn());
-  }
-
   const afterPackages = await core.group("List packages after", () => listPackages());
 
   const report = await core.group("Aggregate report", () =>
@@ -9578,6 +9574,10 @@ async function run() {
   if (report.packageCount === 0) {
     core.info("No update.");
     return;
+  }
+
+  if (has_yarn()) {
+    await core.group("Reimport yarn lock", () => restoreYarn());
   }
 
   const changed = await core.group("Check file changes", filesChanged);
