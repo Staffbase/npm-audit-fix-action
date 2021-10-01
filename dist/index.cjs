@@ -9305,6 +9305,7 @@ function splitRepo(repository) {
  *   author: string,
  *   email: string,
  *   labels: string[],
+ *   lockFile : string,
  * }} params
  */
 async function createOrUpdatePullRequest({
@@ -9318,6 +9319,7 @@ async function createOrUpdatePullRequest({
   author,
   email,
   labels,
+  lockFile,
 }) {
   const remote = `https://${author}:${token}@github.com/${repository}.git`;
   const { owner, repo } = splitRepo(repository);
@@ -9337,7 +9339,7 @@ async function createOrUpdatePullRequest({
 
   await (0,exec.exec)("git", ["config", "user.name", author]);
   await (0,exec.exec)("git", ["config", "user.email", email]);
-  await (0,exec.exec)("git", ["add", "package-lock.json"]);
+  await (0,exec.exec)("git", ["add", lockFile]);
   await (0,exec.exec)("git", ["commit", "--message", `${title}\n\n${commitBody}`]);
   await (0,exec.exec)("git", ["checkout", "-B", branch]);
   await (0,exec.exec)("git", ["push", remote, `HEAD:${branch}`, ...(pull ? ["--force"] : [])]);
@@ -9607,6 +9609,7 @@ async function run() {
       author,
       email: `${author}@users.noreply.github.com`,
       labels: commaSeparatedList(core.getInput("labels")),
+      lockFile: has_yarn() ? "yarn.lock" : "package-lock.json",
     });
   });
 }
