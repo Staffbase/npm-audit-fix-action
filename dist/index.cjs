@@ -665,7 +665,7 @@ var require_file_command = __commonJS({
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.prepareKeyValueMessage = exports.issueFileCommand = void 0;
-    var fs = __importStar(require("fs"));
+    var fs3 = __importStar(require("fs"));
     var os = __importStar(require("os"));
     var uuid_1 = require_dist();
     var utils_1 = require_utils();
@@ -674,10 +674,10 @@ var require_file_command = __commonJS({
       if (!filePath) {
         throw new Error(`Unable to find environment variable for file command ${command}`);
       }
-      if (!fs.existsSync(filePath)) {
+      if (!fs3.existsSync(filePath)) {
         throw new Error(`Missing file at path: ${filePath}`);
       }
-      fs.appendFileSync(filePath, `${utils_1.toCommandValue(message)}${os.EOL}`, {
+      fs3.appendFileSync(filePath, `${utils_1.toCommandValue(message)}${os.EOL}`, {
         encoding: "utf8"
       });
     }
@@ -1936,7 +1936,7 @@ var require_path_utils = __commonJS({
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.toPlatformPath = exports.toWin32Path = exports.toPosixPath = void 0;
-    var path = __importStar(require("path"));
+    var path3 = __importStar(require("path"));
     function toPosixPath(pth) {
       return pth.replace(/[\\]/g, "/");
     }
@@ -1946,7 +1946,7 @@ var require_path_utils = __commonJS({
     }
     exports.toWin32Path = toWin32Path;
     function toPlatformPath(pth) {
-      return pth.replace(/[/\\]/g, path.sep);
+      return pth.replace(/[/\\]/g, path3.sep);
     }
     exports.toPlatformPath = toPlatformPath;
   }
@@ -2017,7 +2017,7 @@ var require_core = __commonJS({
     var file_command_1 = require_file_command();
     var utils_1 = require_utils();
     var os = __importStar(require("os"));
-    var path = __importStar(require("path"));
+    var path3 = __importStar(require("path"));
     var oidc_utils_1 = require_oidc_utils();
     var ExitCode;
     (function(ExitCode2) {
@@ -2045,7 +2045,7 @@ var require_core = __commonJS({
       } else {
         command_1.issueCommand("add-path", {}, inputPath);
       }
-      process.env["PATH"] = `${inputPath}${path.delimiter}${process.env["PATH"]}`;
+      process.env["PATH"] = `${inputPath}${path3.delimiter}${process.env["PATH"]}`;
     }
     exports.addPath = addPath;
     function getInput2(name, options) {
@@ -2215,9 +2215,9 @@ var require_io_util = __commonJS({
     var _a;
     Object.defineProperty(exports, "__esModule", { value: true });
     var assert_1 = require("assert");
-    var fs = require("fs");
-    var path = require("path");
-    _a = fs.promises, exports.chmod = _a.chmod, exports.copyFile = _a.copyFile, exports.lstat = _a.lstat, exports.mkdir = _a.mkdir, exports.readdir = _a.readdir, exports.readlink = _a.readlink, exports.rename = _a.rename, exports.rmdir = _a.rmdir, exports.stat = _a.stat, exports.symlink = _a.symlink, exports.unlink = _a.unlink;
+    var fs3 = require("fs");
+    var path3 = require("path");
+    _a = fs3.promises, exports.chmod = _a.chmod, exports.copyFile = _a.copyFile, exports.lstat = _a.lstat, exports.mkdir = _a.mkdir, exports.readdir = _a.readdir, exports.readlink = _a.readlink, exports.rename = _a.rename, exports.rmdir = _a.rmdir, exports.stat = _a.stat, exports.symlink = _a.symlink, exports.unlink = _a.unlink;
     exports.IS_WINDOWS = process.platform === "win32";
     function exists(fsPath) {
       return __awaiter(this, void 0, void 0, function* () {
@@ -2254,7 +2254,7 @@ var require_io_util = __commonJS({
     function mkdirP(fsPath, maxDepth = 1e3, depth = 1) {
       return __awaiter(this, void 0, void 0, function* () {
         assert_1.ok(fsPath, "a path argument must be provided");
-        fsPath = path.resolve(fsPath);
+        fsPath = path3.resolve(fsPath);
         if (depth >= maxDepth)
           return exports.mkdir(fsPath);
         try {
@@ -2263,7 +2263,7 @@ var require_io_util = __commonJS({
         } catch (err) {
           switch (err.code) {
             case "ENOENT": {
-              yield mkdirP(path.dirname(fsPath), maxDepth, depth + 1);
+              yield mkdirP(path3.dirname(fsPath), maxDepth, depth + 1);
               yield exports.mkdir(fsPath);
               return;
             }
@@ -2294,7 +2294,7 @@ var require_io_util = __commonJS({
         }
         if (stats && stats.isFile()) {
           if (exports.IS_WINDOWS) {
-            const upperExt = path.extname(filePath).toUpperCase();
+            const upperExt = path3.extname(filePath).toUpperCase();
             if (extensions.some((validExt) => validExt.toUpperCase() === upperExt)) {
               return filePath;
             }
@@ -2318,11 +2318,11 @@ var require_io_util = __commonJS({
           if (stats && stats.isFile()) {
             if (exports.IS_WINDOWS) {
               try {
-                const directory = path.dirname(filePath);
-                const upperName = path.basename(filePath).toUpperCase();
+                const directory = path3.dirname(filePath);
+                const upperName = path3.basename(filePath).toUpperCase();
                 for (const actualName of yield exports.readdir(directory)) {
                   if (upperName === actualName.toUpperCase()) {
-                    filePath = path.join(directory, actualName);
+                    filePath = path3.join(directory, actualName);
                     break;
                   }
                 }
@@ -2388,10 +2388,10 @@ var require_io = __commonJS({
     };
     Object.defineProperty(exports, "__esModule", { value: true });
     var childProcess = require("child_process");
-    var path = require("path");
+    var path3 = require("path");
     var util_1 = require("util");
     var ioUtil = require_io_util();
-    var exec4 = util_1.promisify(childProcess.exec);
+    var exec5 = util_1.promisify(childProcess.exec);
     function cp(source, dest, options = {}) {
       return __awaiter(this, void 0, void 0, function* () {
         const { force, recursive } = readCopyOptions(options);
@@ -2399,7 +2399,7 @@ var require_io = __commonJS({
         if (destStat && destStat.isFile() && !force) {
           return;
         }
-        const newDest = destStat && destStat.isDirectory() ? path.join(dest, path.basename(source)) : dest;
+        const newDest = destStat && destStat.isDirectory() ? path3.join(dest, path3.basename(source)) : dest;
         if (!(yield ioUtil.exists(source))) {
           throw new Error(`no such file or directory: ${source}`);
         }
@@ -2411,7 +2411,7 @@ var require_io = __commonJS({
             yield cpDirRecursive(source, newDest, 0, force);
           }
         } else {
-          if (path.relative(source, newDest) === "") {
+          if (path3.relative(source, newDest) === "") {
             throw new Error(`'${newDest}' and '${source}' are the same file`);
           }
           yield copyFile(source, newDest, force);
@@ -2424,7 +2424,7 @@ var require_io = __commonJS({
         if (yield ioUtil.exists(dest)) {
           let destExists = true;
           if (yield ioUtil.isDirectory(dest)) {
-            dest = path.join(dest, path.basename(source));
+            dest = path3.join(dest, path3.basename(source));
             destExists = yield ioUtil.exists(dest);
           }
           if (destExists) {
@@ -2435,7 +2435,7 @@ var require_io = __commonJS({
             }
           }
         }
-        yield mkdirP(path.dirname(dest));
+        yield mkdirP(path3.dirname(dest));
         yield ioUtil.rename(source, dest);
       });
     }
@@ -2445,9 +2445,9 @@ var require_io = __commonJS({
         if (ioUtil.IS_WINDOWS) {
           try {
             if (yield ioUtil.isDirectory(inputPath, true)) {
-              yield exec4(`rd /s /q "${inputPath}"`);
+              yield exec5(`rd /s /q "${inputPath}"`);
             } else {
-              yield exec4(`del /f /a "${inputPath}"`);
+              yield exec5(`del /f /a "${inputPath}"`);
             }
           } catch (err) {
             if (err.code !== "ENOENT")
@@ -2469,7 +2469,7 @@ var require_io = __commonJS({
             return;
           }
           if (isDir) {
-            yield exec4(`rm -rf "${inputPath}"`);
+            yield exec5(`rm -rf "${inputPath}"`);
           } else {
             yield ioUtil.unlink(inputPath);
           }
@@ -2501,7 +2501,7 @@ var require_io = __commonJS({
         try {
           const extensions = [];
           if (ioUtil.IS_WINDOWS && process.env.PATHEXT) {
-            for (const extension of process.env.PATHEXT.split(path.delimiter)) {
+            for (const extension of process.env.PATHEXT.split(path3.delimiter)) {
               if (extension) {
                 extensions.push(extension);
               }
@@ -2519,14 +2519,14 @@ var require_io = __commonJS({
           }
           const directories = [];
           if (process.env.PATH) {
-            for (const p of process.env.PATH.split(path.delimiter)) {
+            for (const p of process.env.PATH.split(path3.delimiter)) {
               if (p) {
                 directories.push(p);
               }
             }
           }
           for (const directory of directories) {
-            const filePath = yield ioUtil.tryGetExecutablePath(directory + path.sep + tool, extensions);
+            const filePath = yield ioUtil.tryGetExecutablePath(directory + path3.sep + tool, extensions);
             if (filePath) {
               return filePath;
             }
@@ -2649,7 +2649,7 @@ var require_toolrunner = __commonJS({
     var os = __importStar(require("os"));
     var events = __importStar(require("events"));
     var child = __importStar(require("child_process"));
-    var path = __importStar(require("path"));
+    var path3 = __importStar(require("path"));
     var io = __importStar(require_io());
     var ioUtil = __importStar(require_io_util());
     var timers_1 = require("timers");
@@ -2855,7 +2855,7 @@ var require_toolrunner = __commonJS({
       exec() {
         return __awaiter(this, void 0, void 0, function* () {
           if (!ioUtil.isRooted(this.toolPath) && (this.toolPath.includes("/") || IS_WINDOWS && this.toolPath.includes("\\"))) {
-            this.toolPath = path.resolve(process.cwd(), this.options.cwd || process.cwd(), this.toolPath);
+            this.toolPath = path3.resolve(process.cwd(), this.options.cwd || process.cwd(), this.toolPath);
           }
           this.toolPath = yield io.which(this.toolPath, true);
           return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
@@ -3128,7 +3128,7 @@ var require_exec = __commonJS({
     exports.getExecOutput = exports.exec = void 0;
     var string_decoder_1 = require("string_decoder");
     var tr = __importStar(require_toolrunner());
-    function exec4(commandLine, args, options) {
+    function exec5(commandLine, args, options) {
       return __awaiter(this, void 0, void 0, function* () {
         const commandArgs = tr.argStringToArray(commandLine);
         if (commandArgs.length === 0) {
@@ -3140,7 +3140,7 @@ var require_exec = __commonJS({
         return runner.exec();
       });
     }
-    exports.exec = exec4;
+    exports.exec = exec5;
     function getExecOutput6(commandLine, args, options) {
       var _a, _b;
       return __awaiter(this, void 0, void 0, function* () {
@@ -3163,7 +3163,7 @@ var require_exec = __commonJS({
           }
         };
         const listeners = Object.assign(Object.assign({}, options === null || options === void 0 ? void 0 : options.listeners), { stdout: stdOutListener, stderr: stdErrListener });
-        const exitCode = yield exec4(commandLine, args, Object.assign(Object.assign({}, options), { listeners }));
+        const exitCode = yield exec5(commandLine, args, Object.assign(Object.assign({}, options), { listeners }));
         stdout += stdoutDecoder.end();
         stderr += stderrDecoder.end();
         return {
@@ -3186,12 +3186,12 @@ var require_git_host_info = __commonJS({
     var defaults = {
       sshtemplate: ({ domain, user, project, committish }) => `git@${domain}:${user}/${project}.git${maybeJoin("#", committish)}`,
       sshurltemplate: ({ domain, user, project, committish }) => `git+ssh://git@${domain}/${user}/${project}.git${maybeJoin("#", committish)}`,
-      edittemplate: ({ domain, user, project, committish, editpath, path }) => `https://${domain}/${user}/${project}${maybeJoin("/", editpath, "/", maybeEncode(committish || "master"), "/", path)}`,
+      edittemplate: ({ domain, user, project, committish, editpath, path: path3 }) => `https://${domain}/${user}/${project}${maybeJoin("/", editpath, "/", maybeEncode(committish || "master"), "/", path3)}`,
       browsetemplate: ({ domain, user, project, committish, treepath }) => `https://${domain}/${user}/${project}${maybeJoin("/", treepath, "/", maybeEncode(committish))}`,
-      browsefiletemplate: ({ domain, user, project, committish, treepath, path, fragment, hashformat }) => `https://${domain}/${user}/${project}/${treepath}/${maybeEncode(committish || "master")}/${path}${maybeJoin("#", hashformat(fragment || ""))}`,
+      browsefiletemplate: ({ domain, user, project, committish, treepath, path: path3, fragment, hashformat }) => `https://${domain}/${user}/${project}/${treepath}/${maybeEncode(committish || "master")}/${path3}${maybeJoin("#", hashformat(fragment || ""))}`,
       docstemplate: ({ domain, user, project, treepath, committish }) => `https://${domain}/${user}/${project}${maybeJoin("/", treepath, "/", maybeEncode(committish))}#readme`,
       httpstemplate: ({ auth, domain, user, project, committish }) => `git+https://${maybeJoin(auth, "@")}${domain}/${user}/${project}.git${maybeJoin("#", committish)}`,
-      filetemplate: ({ domain, user, project, committish, path }) => `https://${domain}/${user}/${project}/raw/${maybeEncode(committish) || "master"}/${path}`,
+      filetemplate: ({ domain, user, project, committish, path: path3 }) => `https://${domain}/${user}/${project}/raw/${maybeEncode(committish) || "master"}/${path3}`,
       shortcuttemplate: ({ type, user, project, committish }) => `${type}:${user}/${project}${maybeJoin("#", committish)}`,
       pathtemplate: ({ user, project, committish }) => `${user}/${project}${maybeJoin("#", committish)}`,
       bugstemplate: ({ domain, user, project }) => `https://${domain}/${user}/${project}/issues`,
@@ -3203,7 +3203,7 @@ var require_git_host_info = __commonJS({
       domain: "github.com",
       treepath: "tree",
       editpath: "edit",
-      filetemplate: ({ auth, user, project, committish, path }) => `https://${maybeJoin(auth, "@")}raw.githubusercontent.com/${user}/${project}/${maybeEncode(committish) || "master"}/${path}`,
+      filetemplate: ({ auth, user, project, committish, path: path3 }) => `https://${maybeJoin(auth, "@")}raw.githubusercontent.com/${user}/${project}/${maybeEncode(committish) || "master"}/${path3}`,
       gittemplate: ({ auth, domain, user, project, committish }) => `git://${maybeJoin(auth, "@")}${domain}/${user}/${project}.git${maybeJoin("#", committish)}`,
       tarballtemplate: ({ domain, user, project, committish }) => `https://codeload.${domain}/${user}/${project}/tar.gz/${maybeEncode(committish) || "master"}`,
       extract: (url) => {
@@ -3228,7 +3228,7 @@ var require_git_host_info = __commonJS({
       domain: "bitbucket.org",
       treepath: "src",
       editpath: "?mode=edit",
-      edittemplate: ({ domain, user, project, committish, treepath, path, editpath }) => `https://${domain}/${user}/${project}${maybeJoin("/", treepath, "/", maybeEncode(committish || "master"), "/", path, editpath)}`,
+      edittemplate: ({ domain, user, project, committish, treepath, path: path3, editpath }) => `https://${domain}/${user}/${project}${maybeJoin("/", treepath, "/", maybeEncode(committish || "master"), "/", path3, editpath)}`,
       tarballtemplate: ({ domain, user, project, committish }) => `https://${domain}/${user}/${project}/get/${maybeEncode(committish) || "master"}.tar.gz`,
       extract: (url) => {
         let [, user, project, aux] = url.pathname.split("/", 4);
@@ -3252,11 +3252,11 @@ var require_git_host_info = __commonJS({
       httpstemplate: ({ auth, domain, user, project, committish }) => `git+https://${maybeJoin(auth, "@")}${domain}/${user}/${project}.git${maybeJoin("#", committish)}`,
       tarballtemplate: ({ domain, user, project, committish }) => `https://${domain}/${user}/${project}/repository/archive.tar.gz?ref=${maybeEncode(committish) || "master"}`,
       extract: (url) => {
-        const path = url.pathname.slice(1);
-        if (path.includes("/-/") || path.includes("/archive.tar.gz")) {
+        const path3 = url.pathname.slice(1);
+        if (path3.includes("/-/") || path3.includes("/archive.tar.gz")) {
           return;
         }
-        const segments = path.split("/");
+        const segments = path3.split("/");
         let project = segments.pop();
         if (project.endsWith(".git")) {
           project = project.slice(0, -4);
@@ -3276,10 +3276,10 @@ var require_git_host_info = __commonJS({
       sshurltemplate: ({ domain, project, committish }) => `git+ssh://git@${domain}/${project}.git${maybeJoin("#", committish)}`,
       edittemplate: ({ domain, user, project, committish, editpath }) => `https://${domain}/${user}/${project}${maybeJoin("/", maybeEncode(committish))}/${editpath}`,
       browsetemplate: ({ domain, project, committish }) => `https://${domain}/${project}${maybeJoin("/", maybeEncode(committish))}`,
-      browsefiletemplate: ({ domain, project, committish, path, hashformat }) => `https://${domain}/${project}${maybeJoin("/", maybeEncode(committish))}${maybeJoin("#", hashformat(path))}`,
+      browsefiletemplate: ({ domain, project, committish, path: path3, hashformat }) => `https://${domain}/${project}${maybeJoin("/", maybeEncode(committish))}${maybeJoin("#", hashformat(path3))}`,
       docstemplate: ({ domain, project, committish }) => `https://${domain}/${project}${maybeJoin("/", maybeEncode(committish))}`,
       httpstemplate: ({ domain, project, committish }) => `git+https://${domain}/${project}.git${maybeJoin("#", committish)}`,
-      filetemplate: ({ user, project, committish, path }) => `https://gist.githubusercontent.com/${user}/${project}/raw${maybeJoin("/", maybeEncode(committish))}/${path}`,
+      filetemplate: ({ user, project, committish, path: path3 }) => `https://gist.githubusercontent.com/${user}/${project}/raw${maybeJoin("/", maybeEncode(committish))}/${path3}`,
       shortcuttemplate: ({ type, project, committish }) => `${type}:${project}${maybeJoin("#", committish)}`,
       pathtemplate: ({ project, committish }) => `${project}${maybeJoin("#", committish)}`,
       bugstemplate: ({ domain, project }) => `https://${domain}/${project}`,
@@ -3310,8 +3310,8 @@ var require_git_host_info = __commonJS({
       protocols: ["git+ssh:", "https:"],
       domain: "git.sr.ht",
       treepath: "tree",
-      browsefiletemplate: ({ domain, user, project, committish, treepath, path, fragment, hashformat }) => `https://${domain}/${user}/${project}/${treepath}/${maybeEncode(committish || "main")}/${path}${maybeJoin("#", hashformat(fragment || ""))}`,
-      filetemplate: ({ domain, user, project, committish, path }) => `https://${domain}/${user}/${project}/blob/${maybeEncode(committish) || "main"}/${path}`,
+      browsefiletemplate: ({ domain, user, project, committish, treepath, path: path3, fragment, hashformat }) => `https://${domain}/${user}/${project}/${treepath}/${maybeEncode(committish || "main")}/${path3}${maybeJoin("#", hashformat(fragment || ""))}`,
+      filetemplate: ({ domain, user, project, committish, path: path3 }) => `https://${domain}/${user}/${project}/blob/${maybeEncode(committish) || "main"}/${path3}`,
       httpstemplate: ({ domain, user, project, committish }) => `https://${domain}/${user}/${project}.git${maybeJoin("#", committish)}`,
       tarballtemplate: ({ domain, user, project, committish }) => `https://${domain}/${user}/${project}/archive/${maybeEncode(committish) || "main"}.tar.gz`,
       bugstemplate: ({ domain, user, project }) => `https://todo.sr.ht/${user}/${project}`,
@@ -3386,15 +3386,15 @@ var require_git_host = __commonJS({
       sshurl(opts) {
         return this._fill(this.sshurltemplate, opts);
       }
-      browse(path, fragment, opts) {
-        if (typeof path !== "string") {
-          return this._fill(this.browsetemplate, path);
+      browse(path3, fragment, opts) {
+        if (typeof path3 !== "string") {
+          return this._fill(this.browsetemplate, path3);
         }
         if (typeof fragment !== "string") {
           opts = fragment;
           fragment = null;
         }
-        return this._fill(this.browsefiletemplate, { ...opts, fragment, path });
+        return this._fill(this.browsefiletemplate, { ...opts, fragment, path: path3 });
       }
       docs(opts) {
         return this._fill(this.docstemplate, opts);
@@ -3417,11 +3417,11 @@ var require_git_host = __commonJS({
       tarball(opts) {
         return this._fill(this.tarballtemplate, { ...opts, noCommittish: false });
       }
-      file(path, opts) {
-        return this._fill(this.filetemplate, { ...opts, path });
+      file(path3, opts) {
+        return this._fill(this.filetemplate, { ...opts, path: path3 });
       }
-      edit(path, opts) {
-        return this._fill(this.edittemplate, { ...opts, path });
+      edit(path3, opts) {
+        return this._fill(this.edittemplate, { ...opts, path: path3 });
       }
       getDefaultRepresentation() {
         return this.default;
@@ -4325,8 +4325,8 @@ var require_context = __commonJS({
           if (fs_1.existsSync(process.env.GITHUB_EVENT_PATH)) {
             this.payload = JSON.parse(fs_1.readFileSync(process.env.GITHUB_EVENT_PATH, { encoding: "utf8" }));
           } else {
-            const path = process.env.GITHUB_EVENT_PATH;
-            process.stdout.write(`GITHUB_EVENT_PATH ${path} does not exist${os_1.EOL}`);
+            const path3 = process.env.GITHUB_EVENT_PATH;
+            process.stdout.write(`GITHUB_EVENT_PATH ${path3} does not exist${os_1.EOL}`);
           }
         }
         this.eventName = process.env.GITHUB_EVENT_NAME;
@@ -5639,14 +5639,14 @@ var require_url_state_machine = __commonJS({
       return url.replace(/\u0009|\u000A|\u000D/g, "");
     }
     function shortenPath(url) {
-      const path = url.path;
-      if (path.length === 0) {
+      const path3 = url.path;
+      if (path3.length === 0) {
         return;
       }
-      if (url.scheme === "file" && path.length === 1 && isNormalizedWindowsDriveLetter(path[0])) {
+      if (url.scheme === "file" && path3.length === 1 && isNormalizedWindowsDriveLetter(path3[0])) {
         return;
       }
-      path.pop();
+      path3.pop();
     }
     function includesCredentials(url) {
       return url.username !== "" || url.password !== "";
@@ -9595,7 +9595,7 @@ var require_github = __commonJS({
 
 // lib/index.js
 var core2 = __toESM(require_core(), 1);
-var import_exec7 = __toESM(require_exec(), 1);
+var import_exec8 = __toESM(require_exec(), 1);
 
 // lib/packageRepoUrls.js
 var import_core = __toESM(require_core(), 1);
@@ -9923,7 +9923,8 @@ async function createOrUpdatePullRequest({
   repository,
   author,
   email,
-  labels
+  labels,
+  lockFile
 }) {
   const remote = `https://${author}:${token}@github.com/${repository}.git`;
   const { owner, repo } = splitRepo(repository);
@@ -9940,7 +9941,7 @@ async function createOrUpdatePullRequest({
   const pull = pulls.data.find(({ head }) => head.ref === branch);
   await (0, import_exec4.exec)("git", ["config", "user.name", author]);
   await (0, import_exec4.exec)("git", ["config", "user.email", email]);
-  await (0, import_exec4.exec)("git", ["add", "package-lock.json"]);
+  await (0, import_exec4.exec)("git", ["add", lockFile]);
   await (0, import_exec4.exec)("git", ["commit", "--message", `${title}
 
 ${commitBody}`]);
@@ -9983,6 +9984,12 @@ async function getDefaultBranch({ token, repository }) {
   return res.data.default_branch;
 }
 
+// lib/hasYarn.js
+var import_fs = __toESM(require("fs"), 1);
+var import_path = __toESM(require("path"), 1);
+var hasYarn = (cwd = process.cwd()) => import_fs.default.existsSync(import_path.default.resolve(cwd, "yarn.lock"));
+var hasYarn_default = hasYarn;
+
 // lib/listPackages.js
 var import_exec5 = __toESM(require_exec(), 1);
 async function listPackages(options = {}) {
@@ -10012,19 +10019,35 @@ async function listPackages(options = {}) {
   return packages;
 }
 
+// lib/restoreYarn.js
+var fs2 = __toESM(require("fs"), 1);
+var path2 = __toESM(require("path"), 1);
+var import_exec6 = __toESM(require_exec(), 1);
+async function forceDelete(filePath) {
+  if (fs2.existsSync(filePath)) {
+    await fs2.promises.rm(filePath);
+  }
+}
+async function restoreYarn(options = {}) {
+  const cwd = options.cwd || process.cwd();
+  await forceDelete(path2.join(cwd, "yarn.lock"));
+  await (0, import_exec6.exec)("yarn", ["import", "--silent"]);
+  await forceDelete(path2.join(cwd, "package-lock.json"));
+}
+
 // lib/updateNpm.js
 var core = __toESM(require_core(), 1);
-var import_exec6 = __toESM(require_exec(), 1);
+var import_exec7 = __toESM(require_exec(), 1);
 async function updateNpm(version) {
   const cmdArgs = npmArgs("install", "--global", `npm@${version}`);
   try {
-    await (0, import_exec6.exec)("npm", cmdArgs);
+    await (0, import_exec7.exec)("npm", cmdArgs);
   } catch (error2) {
     core.error(String(error2));
-    await (0, import_exec6.exec)("sudo", ["npm", ...cmdArgs]);
+    await (0, import_exec7.exec)("sudo", ["npm", ...cmdArgs]);
   }
-  const { stdout: actualVersion } = await (0, import_exec6.getExecOutput)("npm", ["--version"]);
-  await (0, import_exec6.exec)("sudo", ["chown", "-R", `${process.env["USER"]}:`, `${process.env["HOME"]}/.config`]);
+  const { stdout: actualVersion } = await (0, import_exec7.getExecOutput)("npm", ["--version"]);
+  await (0, import_exec7.exec)("sudo", ["chown", "-R", `${process.env["USER"]}:`, `${process.env["HOME"]}/.config`]);
   return actualVersion.trim();
 }
 
@@ -10036,7 +10059,7 @@ function commaSeparatedList(str) {
 // lib/index.js
 async function filesChanged() {
   try {
-    const exitCode = await (0, import_exec7.exec)("git", ["diff", "--exit-code"]);
+    const exitCode = await (0, import_exec8.exec)("git", ["diff", "--exit-code"]);
     return exitCode === 0;
   } catch (err) {
     return false;
@@ -10051,8 +10074,13 @@ function getFromEnv(name) {
 }
 async function run() {
   const npmVersion = await core2.group(`Update npm to ${NPM_VERSION}`, () => updateNpm(NPM_VERSION));
+  if (hasYarn_default()) {
+    await core2.group("Create package-lock.json", async () => {
+      await (0, import_exec8.exec)("npm", npmArgs("i", "--package-lock-only"));
+    });
+  }
   await core2.group("Install user packages", async () => {
-    await (0, import_exec7.exec)("npm", npmArgs("ci"));
+    await (0, import_exec8.exec)("npm", npmArgs("ci"));
   });
   const auditReport = await core2.group("Get audit report", async () => {
     const res = await audit();
@@ -10062,7 +10090,7 @@ async function run() {
   const beforePackages = await core2.group("List packages before", () => listPackages());
   await core2.group("Fix vulnerabilities", () => auditFix());
   await core2.group("Re-install user packages", async () => {
-    await (0, import_exec7.exec)("npm", npmArgs("ci"));
+    await (0, import_exec8.exec)("npm", npmArgs("ci"));
   });
   const afterPackages = await core2.group("List packages after", () => listPackages());
   const report = await core2.group(
@@ -10072,6 +10100,9 @@ async function run() {
   if (report.packageCount === 0) {
     core2.info("No update.");
     return;
+  }
+  if (hasYarn_default()) {
+    await core2.group("Reimport yarn lock", () => restoreYarn());
   }
   const changed = await core2.group("Check file changes", filesChanged);
   if (changed) {
@@ -10097,7 +10128,8 @@ async function run() {
       repository,
       author,
       email,
-      labels: commaSeparatedList(core2.getInput("labels"))
+      labels: commaSeparatedList(core2.getInput("labels")),
+      lockFile: hasYarn_default() ? "yarn.lock" : "package-lock.json"
     });
   });
 }
